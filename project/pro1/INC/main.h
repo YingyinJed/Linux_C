@@ -15,5 +15,6 @@
 /*----------引入自定义头文件----------*/
 #include "ILI93xx.h"    //引入LCD的设置
 #include "Touch.h"      //引入触摸屏相关设置
+#include "File.h"       //引入读取文件头文件
 
 #endif
