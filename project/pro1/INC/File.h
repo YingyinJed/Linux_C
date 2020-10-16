@@ -12,6 +12,6 @@ struct FileDir
 };
 
 /*-------------------定义函数---------------*/
-struct FileDir dir_read(struct FileDir Dir);
+struct FileDir dir_read_BMP(struct FileDir Dir);
 
 #endif

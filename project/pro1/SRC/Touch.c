@@ -15,10 +15,13 @@ struct Touch_val TouchInit(void)
 
 struct Touch_val TouchScan(struct Touch_val Touch)
 {
+
     struct input_event buf;
+
         bzero(&buf,sizeof(buf));//置字节字符串s的前n个字符为0包括‘\0’
 
         read(Touch.ts_fd,&buf,sizeof(buf));
+
         if (buf.type == EV_ABS && buf.code == ABS_X)//获取X轴坐标   
         {
             Touch.x = buf.value;

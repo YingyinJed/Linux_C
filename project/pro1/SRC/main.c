@@ -18,8 +18,9 @@ int main(int argc, char const *argv[])
         Dir.PhotoPath[i] = malloc(32);           //设置存储100个文件名的内存空间大小
     }
     
-    Dir = dir_read(Dir);
+    Dir = dir_read_BMP(Dir);
  /*----------------打开图片路径并读取图片路径下的普通文件------------------*/
+
     while (1)
     {
         Touch = TouchScan(Touch);
