@@ -39,8 +39,7 @@ int main(int argc, char const *argv[])
 
     //读取触摸屏数据
     int x,y;
-    while (1)
-    {
+    
         while(1)
         {
             bzero(&buf,sizeof(buf));//置字节字符串s的前n个字符为0包括‘\0’
@@ -58,7 +57,7 @@ int main(int argc, char const *argv[])
             }
             if (buf.value == 0)//松手检测
             {
-                break;
+                //break;
             }
             if(x > 0 && x < 300)
             {
@@ -77,7 +76,7 @@ int main(int argc, char const *argv[])
                 break;
             }
         }
-    }
+    
 
     close(ts_fd);
     return 0;
