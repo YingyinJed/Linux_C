@@ -1,12 +1,14 @@
 #include "main.h"
 
 /*-------------------线程执行函数-------------------*/
-void Touch_TS(struct Touch_val *Touch)
+void* Touch_TS(void* Touch)
 {
+    struct Touch_val *Touch_POI;
+    Touch_POI = Touch;
     while (1)
     {
-        (*Touch) = TouchScan((*Touch));//扫描并获取现在的触摸位置
-        printf("(%d,%d)\n",Touch->x,Touch->y);
+        (*Touch_POI) = TouchScan((*Touch_POI));//扫描并获取现在的触摸位置
+        printf("(%d,%d)\n",Touch_POI->x,Touch_POI->y);
     }
     
 }
@@ -14,7 +16,11 @@ void Touch_TS(struct Touch_val *Touch)
 int main(int argc, char const *argv[])
 {
     struct Lcd_Init LCD;        //定义LCD相关的结构体
+
     struct Touch_val Touch;     //定义触摸屏相关结构体
+    struct Touch_val *Touch_POI;
+    Touch_POI = &Touch;
+
     struct FileDir Dir_Photo;   //定义获得图片目录
 
     char url_Photo[]= "/mnt/udisk/ZGT_YYJ/";//图片路径
@@ -30,7 +36,7 @@ int main(int argc, char const *argv[])
     pthread_t Touch_pid;//定义一个用于扫描的线程
 
 
-    pthread_create(&Touch_pid,NULL,Touch_TS,&Touch);
+    pthread_create(&Touch_pid,NULL,Touch_TS,(void *)Touch_POI);
 /*----------------   线程相关定义    -----------*/
 
 /*----------------打开图片路径并读取图片路径下的普通文件-----------*/   
