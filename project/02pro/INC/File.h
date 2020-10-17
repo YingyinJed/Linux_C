@@ -1,0 +1,17 @@
+#ifndef _FILE_H_
+#define _FILE_H_
+
+/*----------引入自定义头文件----------*/
+#include "main.h"
+
+/*-------------------定义结构体---------------*/
+struct FileDir
+{
+    int filename;
+    char* PhotoPath[100];//背景图存在最后一个路径中
+};
+
+/*-------------------定义函数---------------*/
+struct FileDir dir_read_BMP(struct FileDir Dir,char * url);
+
+#endif
