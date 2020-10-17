@@ -17,7 +17,8 @@ struct Touch_val TouchScan(struct Touch_val Touch)
 {
 
     struct input_event buf;
-
+    while (1)
+    {
         bzero(&buf,sizeof(buf));//置字节字符串s的前n个字符为0包括‘\0’
 
         read(Touch.ts_fd,&buf,sizeof(buf));
@@ -29,8 +30,12 @@ struct Touch_val TouchScan(struct Touch_val Touch)
         if (buf.type == EV_ABS && buf.code == ABS_Y)//获取X轴坐标   
         {
             Touch.y = buf.value;
-        } 
-    
+        }
+        if (buf.value == 0)//松手检测
+        {
+            break;
+        }
+    }
     return Touch;
 }
 

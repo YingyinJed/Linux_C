@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
         Touch = TouchScan(Touch);
         if (Touch.x > 0 && Touch.x < 300)   
         {
-            Touch.x = Touch.y = 0;//能退出扫描函数肯定是松手了因此将坐标归零,不然就重复判断了
+            Touch.x = Touch.y = 0;
             filenum++;
             if (filenum > Dir.filename)
             {
@@ -42,13 +42,14 @@ int main(int argc, char const *argv[])
 
         if (Touch.x > 500 && Touch.x < 800)   
         {
-            Touch.x = Touch.y = 0;//能退出扫描函数肯定是松手了因此将坐标归零
+            Touch.x = Touch.y = 0;
             filenum--;
             if (filenum < 0)
             {
                 filenum = 0;
             }
         }
+        
         open_bmp(LCD,Dir.PhotoPath[filenum]);
     }
     
