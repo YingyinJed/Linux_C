@@ -17,7 +17,7 @@
 #include "ILI93xx.h"
 /*-------------------宏定义-------------------*/
 #define    TOUCH_PATH  "/dev/input/event0"
-#define    ON_OFF_LET_GO    0   //1为使能，0为不使能
+#define    ON_OFF_LET_GO    1   //1为使能，0为不使能
 /*-------------------定义结构体---------------*/
 struct Touch_val
 {

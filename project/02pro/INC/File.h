@@ -7,7 +7,7 @@
 /*-------------------定义结构体---------------*/
 struct FileDir
 {
-    int filename;
+    int fileNum;//记录文件数量
     char* PhotoPath[100];//背景图存在最后一个路径中
 };
 

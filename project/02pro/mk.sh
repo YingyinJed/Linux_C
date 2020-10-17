@@ -1,1 +1,1 @@
-arm-linux-gcc SRC/*.c   -o  BIN/main  -I  INC/
+arm-linux-gcc SRC/*.c   -o  BIN/main  -I  INC/ -lpthread

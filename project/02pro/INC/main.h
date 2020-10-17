@@ -11,6 +11,7 @@
 #include <string.h>         //为了使用bzero(void *s,int n)
 #include <linux/input.h>    //引入linux关于触摸屏的头文件
 #include <dirent.h>         //引用目录类函数
+#include <pthread.h>        //引用线程相关函数
 
 /*----------引入自定义头文件----------*/
 #include "ILI93xx.h"    //引入LCD的设置

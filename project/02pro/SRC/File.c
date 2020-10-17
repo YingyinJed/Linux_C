@@ -32,14 +32,15 @@ struct FileDir dir_read_BMP(struct FileDir Dir,char * url)
                         sprintf(Dir.PhotoPath[BackGround_NUM],url);
                         //追加路径文件名
                         strcat(Dir.PhotoPath[BackGround_NUM],pEnt->d_name);
-                        Dir.filename++;
+                        Dir.fileNum++;
                     }else
                     {
                         //先获得路径
-                        sprintf(Dir.PhotoPath[Dir.filename],url);
+                        sprintf(Dir.PhotoPath[Dir.fileNum],url);
                         //追加路径文件名
-                        strcat(Dir.PhotoPath[Dir.filename],pEnt->d_name);
-                        Dir.filename++;
+                        strcat(Dir.PhotoPath[Dir.fileNum],pEnt->d_name);
+                        printf("%s\n",Dir.PhotoPath[Dir.fileNum]);
+                        Dir.fileNum++;
                     }  
                 }
             }

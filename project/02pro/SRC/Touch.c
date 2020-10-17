@@ -32,20 +32,8 @@ struct Touch_val TouchScan(struct Touch_val Touch)
         {
             Touch.y = buf.value;
         }
-        if (ON_OFF_LET_GO == 1)
-        {
-            if (buf.value == 0)//松手检测
-            { break; }
-        }else
-        {
-            if (count < 2)//循环两次即可获得X、Y轴的值
-            {
-                count = 0;
-                break;
-            }
-            
-        }
-        
+        if (buf.value == 0)//松手检测
+        { break; }
     }
     return Touch;
 }
