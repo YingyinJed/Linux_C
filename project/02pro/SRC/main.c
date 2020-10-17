@@ -7,19 +7,20 @@ void* Touch_TS(void* Touch)
     Touch_POI = Touch;
     while (1)
     {
-        (*Touch_POI) = TouchScan((*Touch_POI));//扫描并获取现在的触摸位置
-        printf("(%d,%d)\n",Touch_POI->x,Touch_POI->y);
+        (*Touch_POI) = TouchScan((*Touch_POI),NOT_LET_GO);//扫描并获取现在的触摸位置，扫描模式有松手检测
     }
     
 }
+/*-------------------线程执行函数-------------------*/
 
+/*-------------------主运行函数-------------------*/
 int main(int argc, char const *argv[])
 {
     struct Lcd_Init LCD;        //定义LCD相关的结构体
 
     struct Touch_val Touch;     //定义触摸屏相关结构体
-    struct Touch_val *Touch_POI;
-    Touch_POI = &Touch;
+    struct Touch_val *Touch_POI;//定义结构体指针用于线程赋值
+    Touch_POI = &Touch;         //该指针指向后面引用的结构体
 
     struct FileDir Dir_Photo;   //定义获得图片目录
 
@@ -35,7 +36,7 @@ int main(int argc, char const *argv[])
 /*----------------   线程相关定义    -----------*/ 
     pthread_t Touch_pid;//定义一个用于扫描的线程
 
-
+    //创建并配置线程相关参数
     pthread_create(&Touch_pid,NULL,Touch_TS,(void *)Touch_POI);
 /*----------------   线程相关定义    -----------*/
 
@@ -51,7 +52,7 @@ int main(int argc, char const *argv[])
     {
         //显示主界面
         open_bmp(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
-        Touch = TouchScan(Touch);//扫描并获取现在的触摸位置
+        //Touch = TouchScan(Touch);//扫描并获取现在的触摸位置
 
         /*-----------------显示BMP文件-------------------*/
         if (Touch.x > 0 && Touch.x < 200 && Touch.y > 240)
@@ -60,7 +61,7 @@ int main(int argc, char const *argv[])
             //真正进入到相册进程
             while (1)
             {
-                Touch = TouchScan(Touch);//扫描并获取现在的触摸位置
+                //Touch = TouchScan(Touch);//扫描并获取现在的触摸位置
                 if (Touch.x > 0 && Touch.x < 200)   //上一张   
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标

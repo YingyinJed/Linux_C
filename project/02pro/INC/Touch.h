@@ -17,7 +17,8 @@
 #include "ILI93xx.h"
 /*-------------------宏定义-------------------*/
 #define    TOUCH_PATH  "/dev/input/event0"
-#define    ON_OFF_LET_GO    1   //1为使能，0为不使能
+#define    NOT_LET_GO    1   //有送手检测
+#define    LET_GO_MODE   0   //没有松手检测模式
 /*-------------------定义结构体---------------*/
 struct Touch_val
 {
@@ -28,7 +29,7 @@ struct Touch_val
 
 /*-------------------定义函数-----------------*/
 struct Touch_val TouchInit(void);
-struct Touch_val TouchScan(struct Touch_val Touch);
+struct Touch_val TouchScan(struct Touch_val Touch,int Touch_mode);
 void Touch_exit(struct Touch_val Touch);
 
 #endif

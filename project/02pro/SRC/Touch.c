@@ -13,11 +13,9 @@ struct Touch_val TouchInit(void)
     return Touch;
 }
 
-struct Touch_val TouchScan(struct Touch_val Touch)
+struct Touch_val TouchScan(struct Touch_val Touch,int Touch_mode)
 {
-
     struct input_event buf;
-    int count = 0;     //用来记录循环的次数
     while (1)
     {
         bzero(&buf,sizeof(buf));//置字节字符串s的前n个字符为0包括‘\0’
@@ -32,8 +30,15 @@ struct Touch_val TouchScan(struct Touch_val Touch)
         {
             Touch.y = buf.value;
         }
-        if (buf.value == 0)//松手检测
-        { break; }
+        if (Touch_mode == 1)//扫描模式有松手检测
+        {
+            if (buf.type == EV_KEY && buf.code == BTN_TOUCH &&buf.value == 0)//松手检测
+            { break; }
+        }else
+        {
+            if (buf.value == 0)//获得了X,Y轴信息直接退出
+            { break; }
+        }  
     }
     return Touch;
 }
