@@ -33,13 +33,13 @@ int main(int argc, char const *argv[])
     LCD = LCDInit();        //初始化LCD
     Touch = TouchInit();    //初始化触摸屏
     
-    int PhotoNum = 0;
-
+    int PhotoNum = 0;   //记录现在放映的是第几张图片
+    int Music_Num = 0;//记录现在播放的是第几首歌
 /*----------------   线程相关定义    -----------*/ 
-    pthread_t Touch_pid;//定义一个用于扫描的线程
+    pthread_t Touch_pid;//定义一个用于扫描触摸屏的线程
 
     //创建并配置线程相关参数
-    pthread_create(&Touch_pid,NULL,Touch_TS,(void *)Touch_POI);
+    pthread_create(&Touch_pid,NULL,Touch_TS,(void *)Touch_POI);//配置扫描触摸屏线程
 /*----------------   线程相关定义    -----------*/
 
 /*----------------打开图片路径并读取图片路径下的普通文件-----------*/   
@@ -53,20 +53,28 @@ int main(int argc, char const *argv[])
     Dir_Photo = dir_read(Dir_Photo,url_Photo);    //读取图片目录下的文件
     Dir_MP3 = dir_read(Dir_MP3,url_MP3);      //读取MP3目录下的文件
  /*----------------打开图片路径并读取图片路径下的普通文件------------------*/
+    //显示主界面
+    open_bmp(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
     while (1)
     {
-        //显示主界面
-        open_bmp(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
-        //Touch = TouchScan(Touch);//扫描并获取现在的触摸位置
-
+        
         /*-----------------显示BMP文件-------------------*/
         if (Touch.x > 0 && Touch.x < 200 && Touch.y > 240)
         {
             Touch.x = Touch.y =0;   //读取完后及时清除坐标
+            open_bmp(LCD,Dir_Photo.PhotoPath[Photo_tip]);//打开图片操作提示
+            while (1)
+            {
+                if(Touch.x != 0 && Touch.y != 0)//有触碰触摸屏程序才继续
+                {
+                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
+                    open_bmp_down(LCD,Dir_Photo.PhotoPath[PhotoNum]);//显示当前图片
+                    break;
+                }
+            }
             //真正进入到相册进程
             while (1)
             {
-                //Touch = TouchScan(Touch);//扫描并获取现在的触摸位置
                 if (Touch.x > 0 && Touch.x < 200)   //上一张   
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
@@ -80,6 +88,7 @@ int main(int argc, char const *argv[])
                     printf("Last Photo\n");
                     printf("now the PhotoNum is %d\n",PhotoNum);
                     printf("now the Photo's url is :%s\n",Dir_Photo.PhotoPath[PhotoNum]);
+                    open_bmp_right(LCD,Dir_Photo.PhotoPath[PhotoNum]);//显示当前图片
                 }
                 if (Touch.x > 600 && Touch.x < 800)  //下一张 
                 {
@@ -94,14 +103,16 @@ int main(int argc, char const *argv[])
                     printf("Next Photo\n");
                     printf("now the PhotoNum is %d\n",PhotoNum);
                     printf("now the Photo's url is :%s\n",Dir_Photo.PhotoPath[PhotoNum]);
+                    open_bmp_left(LCD,Dir_Photo.PhotoPath[PhotoNum]);//显示当前图片
                 }
                 if (Touch.x > 200 && Touch.x < 600)  //退出
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
                     printf("Quit\n");
+                    //显示主界面
+                    open_bmp_up(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
                     break;
                 }
-                open_bmp(LCD,Dir_Photo.PhotoPath[PhotoNum]);//显示当前图片
             }
         }
         /*-----------------显示BMP文件-------------------*/
@@ -111,7 +122,7 @@ int main(int argc, char const *argv[])
         {
             Touch.x = Touch.y =0;   //读取完后及时清除坐标
             //显示音乐界面
-            open_bmp(LCD,Dir_Photo.PhotoPath[Music_Stop]);
+            open_bmp_down(LCD,Dir_Photo.PhotoPath[Music_Stop]);
             //声明一个布尔类型记录音乐播放状态
             bool Flag_music = false;
             //再声明一个变量记录第一次去按下按键的时候
@@ -120,8 +131,6 @@ int main(int argc, char const *argv[])
             char madplay[] = "madplay ";
             char volume [] = " -a -20 &";
             char command[45];
-            //声明一个变量记录现在播放的是第几首歌
-            int Music_Num = 0;
             while (1)
             {
                 //点击上一曲
@@ -255,6 +264,8 @@ int main(int argc, char const *argv[])
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
                     system("killall -KILL madplay");//退出播放进程
                     printf("Quit\n");
+                    //显示主界面
+                    open_bmp_up(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
                     break;
                 }
                 //根据坐标点判断：播放音乐/暂停音乐/上一曲/下一曲/返回菜单

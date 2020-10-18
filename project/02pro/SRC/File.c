@@ -10,6 +10,7 @@ struct FileDir dir_read(struct FileDir Dir,char * url)
     char background[] = "background";
     char music_play[] = "music_play";
     char music_stop[] = "music_stop";
+    char photo_tip[] = "Photo_tip";
     //寻找路径下的mp3文件
     char TYPE_MP3[] = ".mp3";
 
@@ -54,6 +55,14 @@ struct FileDir dir_read(struct FileDir Dir,char * url)
                         sprintf(Dir.PhotoPath[Music_Stop],url);
                         //追加路径文件名
                         strcat(Dir.PhotoPath[Music_Stop],pEnt->d_name);
+                    }
+                    //如果这副图是图片操作提示图则放在倒数第四个
+                    else if (strstr(File_name,photo_tip) != NULL)
+                    {
+                        //先获得路径
+                        sprintf(Dir.PhotoPath[Photo_tip],url);
+                        //追加路径文件名
+                        strcat(Dir.PhotoPath[Photo_tip],pEnt->d_name);
                     }
                     //如果都不是说明是普通图片则按顺序存储即可
                     else

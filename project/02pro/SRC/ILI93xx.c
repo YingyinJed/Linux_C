@@ -70,6 +70,214 @@ int open_bmp(struct Lcd_Init LCD,char * PhotoPath)
     return 0;
 }
 
+int open_bmp_left(struct Lcd_Init LCD,char * PhotoPath)
+{
+    // 1.  打开图片
+    int fd_bmp = open( PhotoPath , O_RDONLY);
+    lseek(fd_bmp, 54, SEEK_SET);    //便宜54个字节跳过头信息
+    if (-1 == fd_bmp)
+    {
+        perror("open BMP error");
+        return -1 ;
+    }
+    // 2.  读取图像中的BGR颜色数据
+    char  buf_bmp [ BMP_SIZE ] ;
+    int ret_val = read(fd_bmp, buf_bmp , BMP_SIZE );
+
+    // 3.  把图像中的BGR 数据转换为 ARGB  24位转为 32位
+    int  buf_lcd [ H ][ W ] ; 
+    int x, y ;
+    for ( y = 0; y < H ; y++)
+    {
+        for ( x = 0; x < W ; x++)
+        {
+            buf_lcd[y][x] = buf_bmp[(x+y*800)*3 + 0] << 0 | 
+                            buf_bmp[(x+y*800)*3 + 1] << 8 | 
+                            buf_bmp[(x+y*800)*3 + 2] << 16 ;
+        }
+    }
+    // 4.  把转换后的数据显示到LCD文件中//H=480 W=800
+    //由于这个是左移，只考虑x轴因此只声明x轴
+    int change_x = 0;
+    while(1)
+    {
+        for ( y = 0; y < H; y++)
+        {
+            for ( x = 0; x < W; x++)
+            { // 解引用
+                if((x <= (4*(change_x+1)) && x >= (4 * change_x) ))
+                {
+                    *(LCD.p_lcd+x+y*800) = buf_lcd[479-y][x] ;
+                }
+            }
+        }
+        change_x++;
+        if (change_x == 200)
+        {
+            break;
+        }
+    }
+    // 5.  关闭文件释放资源
+    close(fd_bmp);
+    return 0;
+}
+
+int open_bmp_right(struct Lcd_Init LCD,char * PhotoPath)
+{
+    // 1.  打开图片
+    int fd_bmp = open( PhotoPath , O_RDONLY);
+    lseek(fd_bmp, 54, SEEK_SET);    //便宜54个字节跳过头信息
+    if (-1 == fd_bmp)
+    {
+        perror("open BMP error");
+        return -1 ;
+    }
+    // 2.  读取图像中的BGR颜色数据
+    char  buf_bmp [ BMP_SIZE ] ;
+    int ret_val = read(fd_bmp, buf_bmp , BMP_SIZE );
+
+    // 3.  把图像中的BGR 数据转换为 ARGB  24位转为 32位
+    int  buf_lcd [ H ][ W ] ; 
+    int x, y ;
+    for ( y = 0; y < H ; y++)
+    {
+        for ( x = 0; x < W ; x++)
+        {
+            buf_lcd[y][x] = buf_bmp[(x+y*800)*3 + 0] << 0 | 
+                            buf_bmp[(x+y*800)*3 + 1] << 8 | 
+                            buf_bmp[(x+y*800)*3 + 2] << 16 ;
+        }
+    }
+    // 4.  把转换后的数据显示到LCD文件中//H=480 W=800
+    //由于这个是左移，只考虑x轴因此只声明x轴
+    int change_x = 200;
+    while(1)
+    {
+        for ( y = 0; y < H; y++)
+        {
+            for ( x = 0; x < W; x++)
+            { // 解引用
+                if((x <= (4*(change_x+1)) && x >= (4 * change_x) ))
+                {
+                    *(LCD.p_lcd+x+y*800) = buf_lcd[479-y][x] ;
+                }
+            }
+        }
+        change_x--;
+        if (change_x < 0)
+        {
+            break;
+        }
+    }
+    // 5.  关闭文件释放资源
+    close(fd_bmp);
+    return 0;
+}
+
+int open_bmp_up(struct Lcd_Init LCD,char * PhotoPath)
+{
+    // 1.  打开图片
+    int fd_bmp = open( PhotoPath , O_RDONLY);
+    lseek(fd_bmp, 54, SEEK_SET);    //便宜54个字节跳过头信息
+    if (-1 == fd_bmp)
+    {
+        perror("open BMP error");
+        return -1 ;
+    }
+    // 2.  读取图像中的BGR颜色数据
+    char  buf_bmp [ BMP_SIZE ] ;
+    int ret_val = read(fd_bmp, buf_bmp , BMP_SIZE );
+
+    // 3.  把图像中的BGR 数据转换为 ARGB  24位转为 32位
+    int  buf_lcd [ H ][ W ] ; 
+    int x, y ;
+    for ( y = 0; y < H ; y++)
+    {
+        for ( x = 0; x < W ; x++)
+        {
+            buf_lcd[y][x] = buf_bmp[(x+y*800)*3 + 0] << 0 | 
+                            buf_bmp[(x+y*800)*3 + 1] << 8 | 
+                            buf_bmp[(x+y*800)*3 + 2] << 16 ;
+        }
+    }
+    // 4.  把转换后的数据显示到LCD文件中//H=480 W=800
+    //由于这个是左移，只考虑x轴因此只声明x轴
+    int change_y = 0;
+    while(1)
+    {
+        for ( y = 0; y < H; y++)
+        {
+            for ( x = 0; x < W; x++)
+            { // 解引用
+                if((y <= (2*(change_y+1)) && y >= (2 * change_y) ))
+                {
+                    *(LCD.p_lcd+x+y*800) = buf_lcd[479-y][x] ;
+                }
+            }
+        }
+        change_y++;
+        if (change_y > 240)
+        {
+            break;
+        }
+    }
+    // 5.  关闭文件释放资源
+    close(fd_bmp);
+    return 0;
+}
+
+int open_bmp_down(struct Lcd_Init LCD,char * PhotoPath)
+{
+    // 1.  打开图片
+    int fd_bmp = open( PhotoPath , O_RDONLY);
+    lseek(fd_bmp, 54, SEEK_SET);    //便宜54个字节跳过头信息
+    if (-1 == fd_bmp)
+    {
+        perror("open BMP error");
+        return -1 ;
+    }
+    // 2.  读取图像中的BGR颜色数据
+    char  buf_bmp [ BMP_SIZE ] ;
+    int ret_val = read(fd_bmp, buf_bmp , BMP_SIZE );
+
+    // 3.  把图像中的BGR 数据转换为 ARGB  24位转为 32位
+    int  buf_lcd [ H ][ W ] ; 
+    int x, y ;
+    for ( y = 0; y < H ; y++)
+    {
+        for ( x = 0; x < W ; x++)
+        {
+            buf_lcd[y][x] = buf_bmp[(x+y*800)*3 + 0] << 0 | 
+                            buf_bmp[(x+y*800)*3 + 1] << 8 | 
+                            buf_bmp[(x+y*800)*3 + 2] << 16 ;
+        }
+    }
+    // 4.  把转换后的数据显示到LCD文件中//H=480 W=800
+    //由于这个是左移，只考虑x轴因此只声明x轴
+    int change_y = 240;
+    while(1)
+    {
+        for ( y = 0; y < H; y++)
+        {
+            for ( x = 0; x < W; x++)
+            { // 解引用
+                if((y <= (2*(change_y+1)) && y >= (2 * change_y) ))
+                {
+                    *(LCD.p_lcd+x+y*800) = buf_lcd[479-y][x] ;
+                }
+            }
+        }
+        change_y--;
+        if (change_y < 0)
+        {
+            break;
+        }
+    }
+    // 5.  关闭文件释放资源
+    close(fd_bmp);
+    return 0;
+}
+
 void lcd_exit(struct Lcd_Init LCD)
 {
     close(LCD.fd_lcd);//关闭文件

@@ -21,8 +21,5 @@
 #include "File.h"       //引入读取文件头文件
 
 /*----------    宏定义  ----------*/
-#define BackGround_NUM  99  //背景图存在图片目录的最后一个数组中
-#define Music_Play      98  //音乐播放图放在目录的倒数第二个
-#define Music_Stop      97  //音乐暂停图放在目录的倒数第三个
 
 #endif
