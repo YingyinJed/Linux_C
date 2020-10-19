@@ -2,6 +2,8 @@
 
 /*-------------------定义全局变量-------------------*/
 int Touch_mode = NOT_LET_GO;//定义一个参数用于更改触摸屏扫描模式，默认为含松手检测的扫描模式
+int PhotoNum = 0;   //记录现在放映的是第几张图片
+int Music_Num = 0;//记录现在播放的是第几首歌
 /*-------------------定义全局变量-------------------*/
 
 /*-------------------线程执行函数-------------------*/
@@ -14,6 +16,7 @@ void* Touch_TS(void* Touch)
         (*Touch_POI) = TouchScan((*Touch_POI),Touch_mode);//扫描并获取现在的触摸位置
     }
 }
+//void* MPLAYER_PLAY()
 /*-------------------线程执行函数-------------------*/
 
 /*-------------------主运行函数-------------------*/
@@ -37,13 +40,13 @@ int main(int argc, char const *argv[])
     LCD = LCDInit();        //初始化LCD
     Touch = TouchInit();    //初始化触摸屏
     
-    int PhotoNum = 0;   //记录现在放映的是第几张图片
-    int Music_Num = 0;//记录现在播放的是第几首歌
+
 /*----------------   线程相关定义    -----------*/ 
     pthread_t Touch_pid;//定义一个用于扫描触摸屏的线程
-
+    pthread_t MPLAYER;  //定义一个线程用于MPLAYER播放使用
     //创建并配置线程相关参数
     pthread_create(&Touch_pid,NULL,Touch_TS,(void *)Touch_POI);//配置扫描触摸屏线程
+    //pthread_create(&MPLAYER,NULL,MPLAYER_PLAY,(void *)Touch_POI);
 /*----------------   线程相关定义    -----------*/
 
 /*----------------打开图片路径并读取图片路径下的普通文件-----------*/   
@@ -132,8 +135,8 @@ int main(int argc, char const *argv[])
             //再声明一个变量记录第一次去按下按键的时候
             bool First_Touch_music = false;
             //声明3个添加命令的字符串
-            char madplay[] = "madplay ";
-            char volume [] = " -a -20 &";
+            char madplay[] = "mplayer -af volume=-30 ";
+            char volume [] = "&";
             char command[45];
             while (1)
             {
@@ -167,7 +170,7 @@ int main(int argc, char const *argv[])
                         sprintf(command,"");
                     }else//如果不是第一次按下的说明已经有音乐进程
                     {
-                        system("killall -KILL madplay");//先删除上一个播放进程
+                        system("killall -KILL mplayer");//先删除上一个播放进程
                         //播放音乐,添加取址符是让进程后台执行
                         //先获得命令字符串
                         strcat(command,madplay);
@@ -209,12 +212,12 @@ int main(int argc, char const *argv[])
                         }else//如果不是第一次播放说明是暂停，只要继续就好了
                         {
                             Flag_music = true;//改变音乐状态
-                            system("killall -CONT madplay");//继续播放音乐
+                            system("killall -CONT mplayer");//继续播放音乐
                         }  
                     }else
                     {
                         Flag_music = false;//改变音乐状态
-                        system("killall -STOP madplay");//暂停音乐
+                        system("killall -STOP mplayer");//暂停音乐
                         open_bmp(LCD,Dir_Photo.PhotoPath[Music_Stop]);//运行暂停播放页面
                     }
                 }
@@ -247,7 +250,7 @@ int main(int argc, char const *argv[])
                         sprintf(command,"");
                     }else//如果不是第一次按下的说明已经有音乐进程
                     {
-                        system("killall -KILL madplay");//先删除上一个播放进程
+                        system("killall -KILL mplayer");//先删除上一个播放进程
                         //播放音乐,添加取址符是让进程后台执行
                         //先获得命令字符串
                         strcat(command,madplay);
@@ -266,7 +269,7 @@ int main(int argc, char const *argv[])
                 if (Touch.x > 250 && Touch.x < 540 && Touch.y > 335 && Touch.y < 435)
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    system("killall -KILL madplay");//退出播放进程
+                    system("killall -KILL mplayer");//退出播放进程
                     printf("Quit\n");
                     //显示主界面
                     open_bmp_up(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
