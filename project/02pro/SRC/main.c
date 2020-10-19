@@ -283,7 +283,6 @@ int main(int argc, char const *argv[])
         if (Touch.x > 400 && Touch.x < 600&&Touch.y > 240)   
         {
             Touch.x = Touch.y =0;   //读取完后及时清除坐标
-            printf("%s--%d",Dir_Photo.PhotoPath[Gua_Tip],Gua_Tip);
             open_bmp_up(LCD,Dir_Photo.PhotoPath[Gua_Tip]);//先显示刮刮乐提示图
             while (1)
             {
@@ -295,11 +294,15 @@ int main(int argc, char const *argv[])
                 }
             }
             Touch_mode = LET_GO_MODE;//关闭松手检测
+            int rand_num;//定义一个随机数用于使刮刮乐刮开的图片每次不同
+            srand((int)time(0));//设置随机数种子
+            rand_num =  (int) (((rand()%(Dir_Photo.fileNum))+0));
+            printf("%d----------%d\n",Dir_Photo.fileNum,rand_num);
             while (1)
             {
                 if (Touch.x != 0 && Touch.y != 0)//防止一开始就输入了(0,0)这个值
                 {
-                    open_bmp_X_Y(LCD,Dir_Photo.PhotoPath[2],Touch.x,Touch.y);//图片在触摸屏触摸到的位置上显示一部分
+                    open_bmp_X_Y(LCD,Dir_Photo.PhotoPath[rand_num],Touch.x,Touch.y);//图片在触摸屏触摸到的位置上显示一部分
                 }
                 if (Touch.x > 650 && Touch.x < 800 && Touch.y > 0 && Touch.y < 40)
                 {

@@ -7,7 +7,8 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include <stdlib.h>         //引入配置内存相关头文件
+#include <stdlib.h>         //引入配置内存，生成随机数相关头文件
+#include <time.h>           //引入随机数相关头文件
 #include <string.h>         //为了使用bzero(void *s,int n)
 #include <linux/input.h>    //引入linux关于触摸屏的头文件
 #include <dirent.h>         //引用目录类函数
