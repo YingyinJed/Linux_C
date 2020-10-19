@@ -51,8 +51,8 @@ int main(int argc, char const *argv[])
     for (int i = 0; i < 100; i++)
     {
         //设置存储100个文件名的内存空间大小
-        Dir_Photo.PhotoPath[i] = malloc(32);//存储图片文件名
-        Dir_MP3.PhotoPath[i] = malloc(32);  //存储MP3文件名
+        Dir_Photo.PhotoPath[i] = malloc(32*4);//存储图片文件名
+        Dir_MP3.PhotoPath[i] = malloc(32*4);  //存储MP3文件名
     }
     
     Dir_Photo = dir_read(Dir_Photo,url_Photo);    //读取图片目录下的文件
@@ -283,6 +283,7 @@ int main(int argc, char const *argv[])
         if (Touch.x > 400 && Touch.x < 600&&Touch.y > 240)   
         {
             Touch.x = Touch.y =0;   //读取完后及时清除坐标
+            printf("%s--%d",Dir_Photo.PhotoPath[Gua_Tip],Gua_Tip);
             open_bmp_up(LCD,Dir_Photo.PhotoPath[Gua_Tip]);//先显示刮刮乐提示图
             while (1)
             {
@@ -296,10 +297,14 @@ int main(int argc, char const *argv[])
             Touch_mode = LET_GO_MODE;//关闭松手检测
             while (1)
             {
-                open_bmp_X_Y(LCD,Dir_Photo.PhotoPath[2],Touch.x,Touch.y);//图片在触摸屏触摸到的位置上显示一部分
+                if (Touch.x != 0 && Touch.y != 0)//防止一开始就输入了(0,0)这个值
+                {
+                    open_bmp_X_Y(LCD,Dir_Photo.PhotoPath[2],Touch.x,Touch.y);//图片在触摸屏触摸到的位置上显示一部分
+                }
                 if (Touch.x > 650 && Touch.x < 800 && Touch.y > 0 && Touch.y < 40)
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
+                    open_bmp_down(LCD,Dir_Photo.PhotoPath[BackGround_NUM]);//显示主界面背景图
                     break;
                 }
                 
