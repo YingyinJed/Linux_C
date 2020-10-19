@@ -25,11 +25,12 @@ struct Touch_val
     int ts_fd;//触摸屏的文件编号
     int x;  //读取触摸屏X轴
     int y;  //读取触摸屏Y轴
+    int move_dir;//移动方向
 };
 
 /*-------------------定义函数-----------------*/
-struct Touch_val TouchInit(void);
-struct Touch_val TouchScan(struct Touch_val Touch,int Touch_mode);
-void Touch_exit(struct Touch_val Touch);
+struct Touch_val TouchInit(void);//初始化触摸屏
+struct Touch_val TouchScan(struct Touch_val Touch,int Touch_mode);//扫描触摸屏，返回触摸的坐标，在被触摸前不会跳出
+void Touch_exit(struct Touch_val Touch);//关闭触摸屏相关文件
 
 #endif

@@ -1,5 +1,12 @@
 #include "File.h"
 
+/*
+    函数名  ：dir_read
+    作  用  ：读取目录下的文件内容
+    输入参数：存储内容的结构体，需要读取的文件路径
+    返 回 值：目录下的文件信息
+*/
+
 struct FileDir dir_read(struct FileDir Dir,char * url)
 {
     DIR *pDir = NULL;//创建一个DIR*存储打开的路径
@@ -7,10 +14,17 @@ struct FileDir dir_read(struct FileDir Dir,char * url)
     /*---------定义需要寻找的特定文件---------------*/
     //寻找路径下的bmp文件
     char TYPE_BMP[] = ".bmp";
+    //主界面背景
     char background[] = "background";
+    //音乐播放图片
     char music_play[] = "music_play";
     char music_stop[] = "music_stop";
+    //图片操作提示
     char photo_tip[] = "Photo_tip";
+    //刮刮乐图片
+    char gua_tip[] = "Gua_tip";
+    char guaground[] = "Guaground";
+
     //寻找路径下的mp3文件
     char TYPE_MP3[] = ".mp3";
 
@@ -64,6 +78,23 @@ struct FileDir dir_read(struct FileDir Dir,char * url)
                         //追加路径文件名
                         strcat(Dir.PhotoPath[Photo_tip],pEnt->d_name);
                     }
+                    //如果这幅图是刮刮乐提示图则放在倒数第五个
+                    else if (strstr(File_name,gua_tip) != NULL)
+                    {
+                        //先获得路径
+                        sprintf(Dir.PhotoPath[Gua_Tip],url);
+                        //追加路径文件名
+                        strcat(Dir.PhotoPath[Gua_Tip],pEnt->d_name);
+                    }
+                    //如果这幅图是刮刮乐背景图则放在倒数第六个
+                    else if (strstr(File_name,guaground) != NULL)
+                    {
+                        //先获得路径
+                        sprintf(Dir.PhotoPath[Guaground],url);
+                        //追加路径文件名
+                        strcat(Dir.PhotoPath[Guaground],pEnt->d_name);
+                    }
+                    
                     //如果都不是说明是普通图片则按顺序存储即可
                     else
                     {

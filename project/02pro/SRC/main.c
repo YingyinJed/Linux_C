@@ -1,5 +1,9 @@
 #include "main.h"
 
+/*-------------------定义全局变量-------------------*/
+int Touch_mode = NOT_LET_GO;//定义一个参数用于更改触摸屏扫描模式，默认为含松手检测的扫描模式
+/*-------------------定义全局变量-------------------*/
+
 /*-------------------线程执行函数-------------------*/
 void* Touch_TS(void* Touch)
 {
@@ -7,7 +11,8 @@ void* Touch_TS(void* Touch)
     Touch_POI = Touch;
     while (1)
     {
-        (*Touch_POI) = TouchScan((*Touch_POI),NOT_LET_GO);//扫描并获取现在的触摸位置，扫描模式有松手检测
+        (*Touch_POI) = TouchScan((*Touch_POI),Touch_mode);//扫描并获取现在的触摸位置，扫描模式有松手检测
+        printf("Touch_mode:%d\n",Touch_mode);
     }
 }
 /*-------------------线程执行函数-------------------*/
@@ -57,7 +62,7 @@ int main(int argc, char const *argv[])
     open_bmp(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
     while (1)
     {
-        
+        Touch_mode = NOT_LET_GO;//每一次回到著见面都返回到有松手检测的模式
         /*-----------------显示BMP文件-------------------*/
         if (Touch.x > 0 && Touch.x < 200 && Touch.y > 240)
         {
@@ -274,10 +279,34 @@ int main(int argc, char const *argv[])
         }
         /*-----------------播放音乐文件-------------------*/
 
+        /*-----------------刮刮乐-------------------*/
         if (Touch.x > 400 && Touch.x < 600&&Touch.y > 240)   
         {
-            
+            Touch.x = Touch.y =0;   //读取完后及时清除坐标
+            open_bmp_up(LCD,Dir_Photo.PhotoPath[Gua_Tip]);//先显示刮刮乐提示图
+            while (1)
+            {
+                if(Touch.x != 0 && Touch.y != 0)//有触碰触摸屏程序才继续
+                {
+                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
+                    open_bmp(LCD,Dir_Photo.PhotoPath[Guaground]);//显示刮刮乐背景图
+                    break;
+                }
+            }
+            Touch_mode = LET_GO_MODE;//关闭松手检测
+            while (1)
+            {
+                open_bmp_X_Y(LCD,Dir_Photo.PhotoPath[2],Touch.x,Touch.y);//图片在触摸屏触摸到的位置上显示一部分
+                if (Touch.x > 650 && Touch.x < 800 && Touch.y > 0 && Touch.y < 40)
+                {
+                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
+                    break;
+                }
+                
+            }
         }
+        /*-----------------刮刮乐-------------------*/
+
         if (Touch.x > 600 && Touch.x < 800 &&Touch.y > 240)   
         {
             

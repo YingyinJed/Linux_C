@@ -25,6 +25,10 @@ int open_bmp_right(struct Lcd_Init LCD,char * PhotoPath);//在LCD上从右向左
 int open_bmp_up(struct Lcd_Init LCD,char * PhotoPath);//在LCD上从上至下的显示图片
 int open_bmp_down(struct Lcd_Init LCD,char * PhotoPath);//在LCD上从下至上的显示图片
 
-void lcd_exit(struct Lcd_Init LCD);
+int open_bmp_X_Y(struct Lcd_Init LCD,char * PhotoPath,int Touch_x,int Touch_y);//让LCD在触摸区域上显示图片
+
+void Display_pur(struct Lcd_Init LCD,int color);//在LCD上显示纯色调
+
+void lcd_exit(struct Lcd_Init LCD);//关闭LCD相关文件
 
 #endif
