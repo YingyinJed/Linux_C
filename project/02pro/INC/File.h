@@ -12,7 +12,7 @@ struct FileDir
 };
 
 /*-------------------定义函数---------------*/
-struct FileDir dir_read(struct FileDir Dir,char * url);//打开特定路径并返回路径信息到结构体
+struct FileDir dir_read(struct FileDir Dir,char * url,char * type);//打开特定路径并返回路径信息到结构体
 
 /*----------    宏定义  ----------*/
 #define BackGround_NUM      99  //背景图存在图片目录的最后一个数组中

@@ -11,8 +11,7 @@ void* Touch_TS(void* Touch)
     Touch_POI = Touch;
     while (1)
     {
-        (*Touch_POI) = TouchScan((*Touch_POI),Touch_mode);//扫描并获取现在的触摸位置，扫描模式有松手检测
-        printf("Touch_mode:%d\n",Touch_mode);
+        (*Touch_POI) = TouchScan((*Touch_POI),Touch_mode);//扫描并获取现在的触摸位置
     }
 }
 /*-------------------线程执行函数-------------------*/
@@ -31,6 +30,9 @@ int main(int argc, char const *argv[])
 
     char url_Photo[]= "/ZGT/Picture/";  //图片路径
     char url_MP3[] = "/ZGT/MP3/";       //MP3路径
+
+    char type_bmp[] = ".bmp";
+    char type_mp3[] = ".mp3";
 
     Dir_Photo.fileNum = 0;//初始化该结构体整型
     Dir_MP3.fileNum = 0;
@@ -51,12 +53,12 @@ int main(int argc, char const *argv[])
     for (int i = 0; i < 100; i++)
     {
         //设置存储100个文件名的内存空间大小
-        Dir_Photo.PhotoPath[i] = malloc(32*4);//存储图片文件名
-        Dir_MP3.PhotoPath[i] = malloc(32*4);  //存储MP3文件名
+        Dir_Photo.PhotoPath[i] = malloc(300);//存储图片文件名，路径的长度为300字符以内
+        Dir_MP3.PhotoPath[i] = malloc(300);  //存储MP3文件名，路径的长度为300字符以内
     }
     
-    Dir_Photo = dir_read(Dir_Photo,url_Photo);    //读取图片目录下的文件
-    Dir_MP3 = dir_read(Dir_MP3,url_MP3);      //读取MP3目录下的文件
+    Dir_Photo = dir_read(Dir_Photo,url_Photo,type_bmp);    //读取图片目录下的文件
+    Dir_MP3 = dir_read(Dir_MP3,url_MP3,type_mp3);      //读取MP3目录下的文件
  /*----------------打开图片路径并读取图片路径下的普通文件------------------*/
     //显示主界面
     open_bmp(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
@@ -297,7 +299,6 @@ int main(int argc, char const *argv[])
             int rand_num;//定义一个随机数用于使刮刮乐刮开的图片每次不同
             srand((int)time(0));//设置随机数种子
             rand_num =  (int) (((rand()%(Dir_Photo.fileNum))+0));
-            printf("%d----------%d\n",Dir_Photo.fileNum,rand_num);
             while (1)
             {
                 if (Touch.x != 0 && Touch.y != 0)//防止一开始就输入了(0,0)这个值

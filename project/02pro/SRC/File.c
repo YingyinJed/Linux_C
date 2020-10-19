@@ -6,8 +6,7 @@
     输入参数：存储内容的结构体，需要读取的文件路径
     返 回 值：目录下的文件信息
 */
-
-struct FileDir dir_read(struct FileDir Dir,char * url)
+struct FileDir dir_read(struct FileDir Dir,char * url,char * type)
 {
     DIR *pDir = NULL;//创建一个DIR*存储打开的路径
     struct dirent * pEnt = NULL;//创建一个存储路径中读到的信息
@@ -27,8 +26,8 @@ struct FileDir dir_read(struct FileDir Dir,char * url)
 
     //寻找路径下的mp3文件
     char TYPE_MP3[] = ".mp3";
-
-    char File_name[32*4];//用于存储并判断当前的文件路径是否是BMP
+    //用于存储并判断当前的文件路径是否是BMP,路径最大长度为300
+    char File_name[300];
     //打开图片目录
     pDir = opendir(url);
     if (NULL == pDir)
@@ -45,7 +44,7 @@ struct FileDir dir_read(struct FileDir Dir,char * url)
             sprintf(File_name,"%s",pEnt->d_name);
             if (pEnt->d_type == DT_REG)//获得目录内的普通文件
             {   
-                if (strstr(File_name,TYPE_BMP) != NULL)//判断是不是bmp文件
+                if (strstr(File_name,type) != NULL)//判断是不是bmp文件
                 {
                     //如果这幅图是背景图，则存在最后一个
                     if (strstr(File_name,background) != NULL)
@@ -111,16 +110,6 @@ struct FileDir dir_read(struct FileDir Dir,char * url)
                         }
                     }  
                 }
-                if (strstr(File_name,TYPE_MP3) != NULL)//判断是不是mp3文件
-                {
-                    //先获得路径
-                    sprintf(Dir.PhotoPath[Dir.fileNum],url);
-                    //追加路径文件名
-                    strcat(Dir.PhotoPath[Dir.fileNum],pEnt->d_name);
-                    printf("%s\n",Dir.PhotoPath[Dir.fileNum]);
-                    Dir.fileNum++;
-                }
-                
             }
         }
         else
