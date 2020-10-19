@@ -31,9 +31,6 @@ int main(int argc, char const *argv[])
     char url_Photo[]= "/ZGT/Picture/";  //图片路径
     char url_MP3[] = "/ZGT/MP3/";       //MP3路径
 
-    char type_bmp[] = ".bmp";
-    char type_mp3[] = ".mp3";
-
     Dir_Photo.fileNum = 0;//初始化该结构体整型
     Dir_MP3.fileNum = 0;
 

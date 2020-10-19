@@ -11,8 +11,6 @@ struct FileDir dir_read(struct FileDir Dir,char * url,char * type)
     DIR *pDir = NULL;//创建一个DIR*存储打开的路径
     struct dirent * pEnt = NULL;//创建一个存储路径中读到的信息
     /*---------定义需要寻找的特定文件---------------*/
-    //寻找路径下的bmp文件
-    char TYPE_BMP[] = ".bmp";
     //主界面背景
     char background[] = "background";
     //音乐播放图片
@@ -24,8 +22,6 @@ struct FileDir dir_read(struct FileDir Dir,char * url,char * type)
     char gua_tip[] = "Gua_tip";
     char guaground[] = "Guaground";
 
-    //寻找路径下的mp3文件
-    char TYPE_MP3[] = ".mp3";
     //用于存储并判断当前的文件路径是否是BMP,路径最大长度为300
     char File_name[300];
     //打开图片目录
@@ -93,8 +89,7 @@ struct FileDir dir_read(struct FileDir Dir,char * url,char * type)
                         //追加路径文件名
                         strcat(Dir.PhotoPath[Guaground],pEnt->d_name);
                     }
-                    
-                    //如果都不是说明是普通图片则按顺序存储即可
+                    //如果都不是说明是普通文件则按顺序存储即可
                     else
                     {
                         //先获得路径

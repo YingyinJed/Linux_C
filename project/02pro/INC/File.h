@@ -15,6 +15,7 @@ struct FileDir
 struct FileDir dir_read(struct FileDir Dir,char * url,char * type);//打开特定路径并返回路径信息到结构体
 
 /*----------    宏定义  ----------*/
+//宏定义特定文件的存储路径
 #define BackGround_NUM      99  //背景图存在图片目录的最后一个数组中
 
 #define Music_Play          98  //音乐播放图放在目录的倒数第二个
@@ -24,5 +25,9 @@ struct FileDir dir_read(struct FileDir Dir,char * url,char * type);//打开特�
 
 #define Gua_Tip             95  //刮刮乐提示语
 #define Guaground           94  //刮刮乐背景图
+
+//宏定义需要寻找的特定类型文件
+#define type_bmp        ".bmp"
+#define type_mp3        ".mp3"
 
 #endif
