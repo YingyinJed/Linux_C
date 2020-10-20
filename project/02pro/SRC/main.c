@@ -40,6 +40,7 @@ int main(int argc, char const *argv[])
     LCD = LCDInit();        //初始化LCD
     Touch = TouchInit();    //初始化触摸屏
     
+    int fd_fifo_mp3 = Fifo_Init(FIFOPATH_MP3);//初始化MP3管道
 
 /*----------------   线程相关定义    -----------*/ 
     pthread_t Touch_pid;//定义一个用于扫描触摸屏的线程
@@ -101,22 +102,15 @@ int main(int argc, char const *argv[])
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
                     if (PhotoNum == (Dir_Photo.fileNum - 1))//因为从0开始数因此要-1
-                    {
-                        PhotoNum = (Dir_Photo.fileNum - 1);
-                    }else
-                    {
-                        PhotoNum++;
-                    }
-                    printf("Next Photo\n");
-                    printf("now the PhotoNum is %d\n",PhotoNum);
-                    printf("now the Photo's url is :%s\n",Dir_Photo.PhotoPath[PhotoNum]);
+                    {   PhotoNum = (Dir_Photo.fileNum - 1);}
+                    else
+                    {   PhotoNum++; }
                     open_bmp_left(LCD,Dir_Photo.PhotoPath[PhotoNum]);//显示当前图片
                 }
                 if (Touch.x > 200 && Touch.x < 600)  //退出
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
                     printf("Quit\n");
-                    //显示主界面
                     open_bmp_up(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
                     break;
                 }
@@ -147,7 +141,7 @@ int main(int argc, char const *argv[])
             //然后暂停,等待操作
             sprintf(command,"pause\n");
             sleep(1); //由于播放需要时间，故延时1秒等文件打开
-            Mk_Fifo(FIFOPATH_MP3,command);
+            Mk_Fifo(fd_fifo_mp3,command);
             //执行完命令后即使清除命令缓存区的内容
             sprintf(command,"");
             while (1)
@@ -166,10 +160,10 @@ int main(int argc, char const *argv[])
                     {
                         Music_Num--;
                     }
-                    
+                    sleep(1); //由于播放需要时间，故延时1秒等文件打开
                     //先执行退出程序退出准备中的曲目
                     sprintf(command,"quit\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,"");  
 
@@ -187,7 +181,7 @@ int main(int argc, char const *argv[])
                     sleep(1);//延时1秒防止操作不了
                     //执行播放/继续命令
                     sprintf(command,"pause\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,""); 
                     //判断音乐是否处于播放状态
@@ -216,10 +210,10 @@ int main(int argc, char const *argv[])
                     {
                         Music_Num++;
                     }
-
+                    sleep(1); //由于播放需要时间，故延时1秒等文件打开
                     //先执行退出程序退出准备中的曲目
                     sprintf(command,"quit\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,"");  
 
@@ -239,7 +233,7 @@ int main(int argc, char const *argv[])
                     open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面
                     //执行快进10秒
                     sprintf(command,"seek 10\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,"");
                 }
@@ -253,7 +247,7 @@ int main(int argc, char const *argv[])
                     sleep(1);//延时1秒防止操作不了
                     //执行后退10秒
                     sprintf(command,"seek -10\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,"");
                     
@@ -264,7 +258,7 @@ int main(int argc, char const *argv[])
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
                     //执行音量+10
                     sprintf(command,"volume -10\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,"");
                     
@@ -276,7 +270,7 @@ int main(int argc, char const *argv[])
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
                     //执行音量-10
                     sprintf(command,"volume 10\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,"");
                 }
@@ -287,7 +281,7 @@ int main(int argc, char const *argv[])
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
                     //执行退出程序退出准备中的曲目
                     sprintf(command,"quit\n");
-                    Mk_Fifo(FIFOPATH_MP3,command);
+                    Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,""); 
                     printf("Quit\n");
@@ -331,7 +325,6 @@ int main(int argc, char const *argv[])
                     open_bmp_down(LCD,Dir_Photo.PhotoPath[BackGround_NUM]);//显示主界面背景图
                     break;
                 }
-                
             }
         }
         /*-----------------刮刮乐-------------------*/
@@ -343,5 +336,6 @@ int main(int argc, char const *argv[])
     }  
     Touch_exit(Touch);//关闭触摸屏相关文件
     lcd_exit(LCD);  //关闭LCD
+    close(fd_fifo_mp3);// 4. 关闭文件
     return 0;
 }

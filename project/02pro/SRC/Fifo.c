@@ -1,12 +1,11 @@
 #include "Fifo.h"
-
 /*
-    函数名  ：Mk_Fifo
-    作  用  ：创建一个管道文件，并在里面写入相应的命令
-    输入参数：fifopath为管道的创建路径，command为写入管道的内容
-    返 回 值：成功返回0，失败返回-1
+    函数名  ：Fifo_Init
+    作  用  ：创建一个管道文件
+    输入参数：fifopath为管道的创建路径
+    返 回 值：该文件的文件编号
 */
-int Mk_Fifo(char * fifopath,char * command)
+int Fifo_Init(char* fifopath)
 {
     // 0. 检查管道文件是否存在
     if (access( fifopath , F_OK))
@@ -26,7 +25,16 @@ int Mk_Fifo(char * fifopath,char * command)
         perror("open fifo error");
         return -1 ;
     }
-    
+    return fd_fifo;
+}
+/*
+    函数名  ：Mk_Fifo
+    作  用  ：在管道内写入相应的命令
+    输入参数：fifopath为管道的创建路径，command为写入管道的内容
+    返 回 值：成功返回0，失败返回-1
+*/
+int Mk_Fifo(int fd_fifo,char * command)
+{
     // 3. 读取、写入数据 read/write
     int ret_val = write(fd_fifo , command, strlen(command) );
     if (ret_val <= 0 )
@@ -34,8 +42,6 @@ int Mk_Fifo(char * fifopath,char * command)
         perror("write error");
         return -1 ;
     }
-    // 4. 关闭文件
-    close(fd_fifo);
-    
     return 0;
 }
+

@@ -3,7 +3,8 @@
 
 #include "main.h"
 
-int Mk_Fifo(char * fifopath,char * command);
+int Fifo_Init(char* fifopath);
+int Mk_Fifo(int fd_fifo,char * command);
 
 #define FIFOPATH_MP3    "/tmp/MP3"
 
