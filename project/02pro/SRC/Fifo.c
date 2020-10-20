@@ -28,7 +28,7 @@ int Mk_Fifo(char * fifopath,char * command)
     }
     
     // 3. 读取、写入数据 read/write
-    int ret_val = write(fd_fifo , command, sizeof(command) );
+    int ret_val = write(fd_fifo , command, strlen(command) );
     if (ret_val <= 0 )
     {
         perror("write error");
