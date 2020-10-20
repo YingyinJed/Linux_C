@@ -21,6 +21,8 @@
 #include "Touch.h"      //引入触摸屏相关设置
 #include "File.h"       //引入读取文件头文件
 #include "Fifo.h"       //引入管道相关头文件
+
+#include "album.h"      //引用相册控制相关函数
 #include "music_mp3.h"  //引用MP3控制相关函数
 /*----------    宏定义  ----------*/
 

@@ -80,39 +80,21 @@ int main(int argc, char const *argv[])
                     break;
                 }
             }
+            struct Album_user Album;
             //真正进入到相册进程
-            while (1)
+            while(1)
             {
-                if (Touch.x > 0 && Touch.x < 200)   //上一张   
+                Album = Album_Start(PhotoNum,LCD,Touch,Dir_Photo);//退出时记录现在播到哪张图
+                PhotoNum = Album.PhotoNum;
+                if (Album.Touch_place == 2)//说明有触碰触摸屏
                 {
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    if (PhotoNum == 0)
-                    {
-                        PhotoNum = 0;
-                    }else
-                    {
-                        PhotoNum--;
-                    }
-                    printf("Last Photo\n");
-                    printf("now the PhotoNum is %d\n",PhotoNum);
-                    printf("now the Photo's url is :%s\n",Dir_Photo.PhotoPath[PhotoNum]);
-                    open_bmp_right(LCD,Dir_Photo.PhotoPath[PhotoNum]);//显示当前图片
+                    Touch.x = Touch.y = 0;//扫描完成及时清除标志
+                    Album.Touch_place = 1;//还原标志位
                 }
-                if (Touch.x > 600 && Touch.x < 800)  //下一张 
+                if (Album.Touch_place == 0 )//说明触摸位置时清0
                 {
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    if (PhotoNum == (Dir_Photo.fileNum - 1))//因为从0开始数因此要-1
-                    {   PhotoNum = (Dir_Photo.fileNum - 1);}
-                    else
-                    {   PhotoNum++; }
-                    open_bmp_left(LCD,Dir_Photo.PhotoPath[PhotoNum]);//显示当前图片
-                }
-                if (Touch.x > 200 && Touch.x < 600)  //退出
-                {
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    printf("Quit\n");
-                    open_bmp_up(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
-                    break;
+                    Touch.x = Touch.y = 0;//扫描完成及时清除标志
+                    break; 
                 }
             }
         }
