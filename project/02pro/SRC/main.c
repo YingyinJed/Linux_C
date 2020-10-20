@@ -127,23 +127,9 @@ int main(int argc, char const *argv[])
             //声明一个布尔类型记录音乐播放状态
             bool Flag_music = false;
             
-            //声明2个添加命令的字符串
-            char madplay[64];
-            sprintf(madplay,"mplayer -quiet -slave -input file=%s -af volume=-30 ",FIFOPATH_MP3);
             char command[200];
-
-            //刚进入程序我们就将音乐播放器打开
-            sprintf(command,"%s%s &",madplay,Dir_MP3.PhotoPath[Music_Num]);
-            system(command);
-            printf("%s\n",command);
-            //执行完命令后即使清除命令缓存区的内容
-            sprintf(command,"");
-            //然后暂停,等待操作
-            sprintf(command,"pause\n");
-            sleep(1); //由于播放需要时间，故延时1秒等文件打开
-            Mk_Fifo(fd_fifo_mp3,command);
-            //执行完命令后即使清除命令缓存区的内容
-            sprintf(command,"");
+            //初始化
+            MP3_Init(fd_fifo_mp3,Dir_MP3.PhotoPath[Music_Num]);
             while (1)
             {
                 //点击上一曲
@@ -154,25 +140,10 @@ int main(int argc, char const *argv[])
                     open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面
                     //改变播放的曲目
                     if (Music_Num <= 0)
-                    {
-                        Music_Num = 0;
-                    }else
-                    {
-                        Music_Num--;
-                    }
-                    sleep(1); //由于播放需要时间，故延时1秒等文件打开
-                    //先执行退出程序退出准备中的曲目
-                    sprintf(command,"quit\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");  
-
-                    //再播放改变数量后的曲目
-                    sleep(1);//由于退出命令需要执行时间故延时1秒后执行
-                    sprintf(command,"%s%s &",madplay,Dir_MP3.PhotoPath[Music_Num]);
-                    system(command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");          
+                    { Music_Num = 0; }
+                    else
+                    { Music_Num--; }
+                    MP3_Q_P(fd_fifo_mp3,Dir_MP3.PhotoPath[Music_Num]);         
                 }
                 //点击播放/暂停键
                 if (Touch.x > 300 && Touch.x < 465 && Touch.y > 95 && Touch.y < 286)
@@ -204,25 +175,10 @@ int main(int argc, char const *argv[])
                     open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面
                     //改变播放的曲目
                     if (Music_Num == (Dir_MP3.fileNum - 1))
-                    {
-                        Music_Num = (Dir_MP3.fileNum - 1);
-                    }else
-                    {
-                        Music_Num++;
-                    }
-                    sleep(1); //由于播放需要时间，故延时1秒等文件打开
-                    //先执行退出程序退出准备中的曲目
-                    sprintf(command,"quit\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");  
-
-                    //再播放改变数量后的曲目
-                    sleep(1);//由于退出命令需要执行时间故延时1秒后执行
-                    sprintf(command,"%s%s &",madplay,Dir_MP3.PhotoPath[Music_Num]);
-                    system(command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");  
+                    { Music_Num = (Dir_MP3.fileNum - 1); }
+                    else
+                    { Music_Num++; }
+                    MP3_Q_P(fd_fifo_mp3,Dir_MP3.PhotoPath[Music_Num]);  
                 }
                 //进度前进10s
                 if (Touch.x > 690 && Touch.x < 800 && Touch.y > 95 && Touch.y < 286)
@@ -250,7 +206,6 @@ int main(int argc, char const *argv[])
                     Mk_Fifo(fd_fifo_mp3,command);
                     //执行完命令后即使清除命令缓存区的内容
                     sprintf(command,"");
-                    
                 }
                 //音量+10
                 if (Touch.x > 60 && Touch.x < 165 && Touch.y > 330 && Touch.y < 450)
