@@ -1,0 +1,1 @@
+gcc SRC/*.c   -o  BIN/main  -I  INC/

@@ -33,7 +33,7 @@ int Fifo_Init(char* fifopath)
     输入参数：fifopath为管道的创建路径，command为写入管道的内容
     返 回 值：成功返回0，失败返回-1
 */
-int Mk_Fifo(int fd_fifo,char * command)
+int WR_Fifo(int fd_fifo,char * command)
 {
     // 3. 读取、写入数据 read/write
     int ret_val = write(fd_fifo , command, strlen(command) );

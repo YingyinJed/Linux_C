@@ -1,5 +1,10 @@
 #include "album.h"
-
+/*
+    函数名  ：Album_Start
+    作  用  ：在管道内写入相应的命令
+    输入参数：
+    返 回 值：
+*/
 struct Album_user Album_Start(int PhotoNum,struct Lcd_Init LCD,struct Touch_val Touch,struct FileDir Dir_Photo)
 {
     struct Album_user Album;

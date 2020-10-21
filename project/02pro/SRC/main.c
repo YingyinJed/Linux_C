@@ -110,125 +110,26 @@ int main(int argc, char const *argv[])
             bool Flag_music = false;
             
             char command[200];
+
+            struct MP3_START MP3;//定义用于返回的结构体
             //初始化
             MP3_Init(fd_fifo_mp3,Dir_MP3.PhotoPath[Music_Num]);
             while (1)
             {
-                //点击上一曲
-                if (Touch.x > 160 && Touch.x < 260 && Touch.y > 95 && Touch.y < 286)
+                MP3 = MP3_Start(fd_fifo_mp3,LCD,Dir_Photo,Touch,Dir_MP3,Flag_music,Music_Num,command);
+                Music_Num = MP3.Music_Num;
+                Flag_music = MP3.Flag_music;
+                if (MP3.Touch_place == 2)//如果操作了触摸屏及时清空坐标值
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    Flag_music = true;//无论原状态如何现在都是播放音乐的状态
-                    open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面
-                    //改变播放的曲目
-                    if (Music_Num <= 0)
-                    { Music_Num = 0; }
-                    else
-                    { Music_Num--; }
-                    MP3_Q_P(fd_fifo_mp3,Dir_MP3.PhotoPath[Music_Num]);         
                 }
-                //点击播放/暂停键
-                if (Touch.x > 300 && Touch.x < 465 && Touch.y > 95 && Touch.y < 286)
+                else if (MP3.Touch_place == 1)//点击了退出则跳出循环
                 {
                     Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    sleep(1);//延时1秒防止操作不了
-                    //执行播放/继续命令
-                    sprintf(command,"pause\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,""); 
-                    //判断音乐是否处于播放状态
-                    if(Flag_music == false)
-                    {
-                        //改变播放状态
-                        Flag_music = true;
-                        open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面 
-                    }else
-                    {
-                        Flag_music = false;//改变音乐状态
-                        open_bmp(LCD,Dir_Photo.PhotoPath[Music_Stop]);//运行暂停播放页面
-                    }
-                }
-                //点击下一曲
-                if (Touch.x > 540 && Touch.x < 620 && Touch.y > 95 && Touch.y < 286)
-                {
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    Flag_music = true;//无论原状态如何现在都是播放音乐的状态
-                    open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面
-                    //改变播放的曲目
-                    if (Music_Num == (Dir_MP3.fileNum - 1))
-                    { Music_Num = (Dir_MP3.fileNum - 1); }
-                    else
-                    { Music_Num++; }
-                    MP3_Q_P(fd_fifo_mp3,Dir_MP3.PhotoPath[Music_Num]);  
-                }
-                //进度前进10s
-                if (Touch.x > 690 && Touch.x < 800 && Touch.y > 95 && Touch.y < 286)
-                {
-                    //改变播放状态
-                    Flag_music = true;
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面
-                    //执行快进10秒
-                    sprintf(command,"seek 10\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");
-                }
-                //进度后退10s
-                if (Touch.x > 0 && Touch.x < 110 && Touch.y > 95 && Touch.y < 286)
-                {
-                    //改变播放状态
-                    Flag_music = true;
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    open_bmp(LCD,Dir_Photo.PhotoPath[Music_Play]);//运行播放音乐界面
-                    sleep(1);//延时1秒防止操作不了
-                    //执行后退10秒
-                    sprintf(command,"seek -10\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");
-                }
-                //音量+10
-                if (Touch.x > 60 && Touch.x < 165 && Touch.y > 330 && Touch.y < 450)
-                {
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    //执行音量+10
-                    sprintf(command,"volume -10\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");
-                    
-                }
-
-                //音量-10
-                if (Touch.x > 620 && Touch.x < 740 && Touch.y > 330 && Touch.y < 450)
-                {
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    //执行音量-10
-                    sprintf(command,"volume 10\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,"");
-                }
-
-                //点击返回菜单
-                if (Touch.x > 250 && Touch.x < 540 && Touch.y > 335 && Touch.y < 435)
-                {
-                    Touch.x = Touch.y =0;   //读取完后及时清除坐标
-                    //执行退出程序退出准备中的曲目
-                    sprintf(command,"quit\n");
-                    Mk_Fifo(fd_fifo_mp3,command);
-                    //执行完命令后即使清除命令缓存区的内容
-                    sprintf(command,""); 
-                    printf("Quit\n");
-                    //显示主界面
-                    open_bmp_up(LCD,Dir_Photo.PhotoPath[BackGround_NUM]); 
                     break;
                 }
                 //根据坐标点判断：播放音乐/暂停音乐/上一曲/下一曲/返回菜单
             }
-            
         }
         /*-----------------播放音乐文件-------------------*/
 
@@ -266,10 +167,12 @@ int main(int argc, char const *argv[])
         }
         /*-----------------刮刮乐-------------------*/
 
+        /*-----------------视频播放-------------------*/
         if (Touch.x > 600 && Touch.x < 800 &&Touch.y > 240)   
         {
             
         }
+        /*-----------------视频播放-------------------*/
     }  
     Touch_exit(Touch);//关闭触摸屏相关文件
     lcd_exit(LCD);  //关闭LCD
